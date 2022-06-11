@@ -1,17 +1,39 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { SettingsProvider } from "./contexts/SettingsContext";
+import "./languages";
+import store, { persistor } from "./store";
+import { StyledEngineProvider } from "@mui/material";
+import { SnackbarProvider } from "notistack";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { HelmetProvider } from "react-helmet-async";
+import { Provider as StoreProvider } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import App from "../src/App";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const anchorOrigin = {
+  vertical: "top",
+  horizontal: "right",
+};
+
+const root = createRoot(document.querySelector("#root"));
+
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <HelmetProvider>
+        <StyledEngineProvider injectFirst>
+          <SettingsProvider>
+            <StoreProvider store={store}>
+              <PersistGate persistor={persistor} loading={null}>
+                <SnackbarProvider anchorOrigin={anchorOrigin}>
+                  <App />
+                </SnackbarProvider>
+              </PersistGate>
+            </StoreProvider>
+          </SettingsProvider>
+        </StyledEngineProvider>
+      </HelmetProvider>
+    </Router>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

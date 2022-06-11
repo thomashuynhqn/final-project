@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import SettingsDrawer from "./components/SettingsDrawer";
+import useScrollReset from "./hooks/useScrollReset";
+import useSettings from "./hooks/useSettings";
+import { createCustomTheme } from "./theme";
+import { ThemeProvider } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import React from "react";
+import { useRoutes } from "react-router-dom";
+import routes from "../src/routes";
 
-function App() {
+const App = () => {
+  useScrollReset();
+
+  const routing = useRoutes(routes());
+
+  const { settings } = useSettings();
+
+  const theme = createCustomTheme({
+    theme: settings.theme,
+    direction: settings.direction,
+    roundedCorners: settings.roundedCorners,
+    responsiveFontSizes: settings.responsiveFontSizes,
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <SettingsDrawer />
+      {routing}
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
